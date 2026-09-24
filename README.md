@@ -4,6 +4,8 @@ Noor is a voice agent built on [ElevenLabs Agents](https://elevenlabs.io/agents)
 
 **[Talk to Noor: live demo](https://ryanfuruness.github.io/lumora-care-agent/)** · [Deployment brief](brief/deployment-brief.md) · [Eval results](evals/results)
 
+![A text chat with Noor: the owner is verified, a handover slot is booked, and the side panel shows each tool call and the appointment record](docs/screenshot.jpg)
+
 ## What it handles
 
 | Capability | What Noor does |
