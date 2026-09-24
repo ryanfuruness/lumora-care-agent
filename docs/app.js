@@ -99,13 +99,25 @@ async function start(asText) {
     if (!asText) await navigator.mediaDevices.getUserMedia({ audio: true });
     conversation = await Conversation.startSession({
       agentId: AGENT_ID,
-      connectionType: asText ? "websocket" : "webrtc",
+      // WebSocket for voice too: the agent only accepts sessions that carry this site's Origin header,
+      // and the WebRTC transport doesn't send one, so it would be refused at start-up.
+      connectionType: "websocket",
       textOnly: asText,
       overrides: { agent: { language } },
       dynamicVariables: { channel: asText ? "web_chat" : "web_voice" },
       clientTools,
       onConnect: () => { setLive(true); setStatus(asText ? "Chat connected" : "Listening"); if (asText) els.msg.focus(); },
-      onDisconnect: () => { conversation = null; setLive(false); setStatus("Conversation ended"); addBubble("system", "Conversation ended."); },
+      onDisconnect: (details) => {
+        conversation = null;
+        setLive(false);
+        if (details && details.reason === "error") {
+          console.error("Disconnected:", details);
+          setStatus("The connection dropped. The demo may have reached today's limit; please try again later.");
+        } else {
+          setStatus("Conversation ended");
+        }
+        addBubble("system", "Conversation ended.");
+      },
       onStatusChange: ({ status }) => { if (status === "connecting") setStatus("Connecting…"); },
       onModeChange: ({ mode }) => {
         if (textMode) return;
