@@ -1,0 +1,226 @@
+[
+  {
+    "type": "client",
+    "name": "verify_owner",
+    "description": "Verify that the caller is the registered owner of a unit. Call only after the caller has said both the unit number and the last four digits of the registered mobile; never with empty or guessed values. Required before sharing or changing anything about a specific unit.",
+    "expects_response": true,
+    "response_timeout_secs": 10,
+    "parameters": {
+      "type": "object",
+      "required": [
+        "unit_number",
+        "phone_last4"
+      ],
+      "properties": {
+        "unit_number": {
+          "type": "string",
+          "description": "Unit number as the caller says it, normalised to the form COMMUNITY-BUILDING-UNIT, e.g. CRK-A-1204 (Lumora Creek, Tower A, apartment 1204) or OAS-TH-031 (Lumora Oasis, townhouse 31). Use uppercase letters."
+        },
+        "phone_last4": {
+          "type": "string",
+          "description": "The last four digits of the mobile number registered to the unit, digits only."
+        }
+      }
+    }
+  },
+  {
+    "type": "client",
+    "name": "get_handover_status",
+    "description": "Get the handover readiness of a verified unit: ready, not ready (with the outstanding items) or already handed over.",
+    "expects_response": true,
+    "response_timeout_secs": 10,
+    "parameters": {
+      "type": "object",
+      "required": [
+        "unit_number"
+      ],
+      "properties": {
+        "unit_number": {
+          "type": "string",
+          "description": "The verified unit number, e.g. CRK-A-1204."
+        }
+      }
+    }
+  },
+  {
+    "type": "client",
+    "name": "get_handover_slots",
+    "description": "List available handover appointment slots for a verified unit that is ready for handover.",
+    "expects_response": true,
+    "response_timeout_secs": 10,
+    "parameters": {
+      "type": "object",
+      "required": [
+        "unit_number"
+      ],
+      "properties": {
+        "unit_number": {
+          "type": "string",
+          "description": "The verified unit number."
+        },
+        "preferred_date": {
+          "type": "string",
+          "description": "Optional preferred date in YYYY-MM-DD format if the caller gave one. Leave empty otherwise."
+        }
+      }
+    }
+  },
+  {
+    "type": "client",
+    "name": "book_handover_appointment",
+    "description": "Book a handover appointment slot. Only call after the caller has explicitly confirmed the slot.",
+    "expects_response": true,
+    "response_timeout_secs": 10,
+    "parameters": {
+      "type": "object",
+      "required": [
+        "unit_number",
+        "slot_id"
+      ],
+      "properties": {
+        "unit_number": {
+          "type": "string",
+          "description": "The verified unit number."
+        },
+        "slot_id": {
+          "type": "string",
+          "description": "The slot_id returned by get_handover_slots for the slot the caller chose."
+        }
+      }
+    }
+  },
+  {
+    "type": "client",
+    "name": "get_service_charges",
+    "description": "Get the service-charge account for a verified unit: annual rate, area, current balance, due date, status and last payment.",
+    "expects_response": true,
+    "response_timeout_secs": 10,
+    "parameters": {
+      "type": "object",
+      "required": [
+        "unit_number"
+      ],
+      "properties": {
+        "unit_number": {
+          "type": "string",
+          "description": "The verified unit number."
+        }
+      }
+    }
+  },
+  {
+    "type": "client",
+    "name": "create_maintenance_ticket",
+    "description": "Create a maintenance ticket for a unit. Only call after reading the summary back and the caller confirming it.",
+    "expects_response": true,
+    "response_timeout_secs": 10,
+    "parameters": {
+      "type": "object",
+      "required": [
+        "unit_number",
+        "category",
+        "urgency",
+        "description"
+      ],
+      "properties": {
+        "unit_number": {
+          "type": "string",
+          "description": "The unit number (verified where possible)."
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "plumbing",
+            "electrical",
+            "ac_hvac",
+            "doors_windows",
+            "finishes",
+            "appliances",
+            "structural",
+            "pest",
+            "other"
+          ],
+          "description": "The best-matching category for the issue."
+        },
+        "urgency": {
+          "type": "string",
+          "enum": [
+            "emergency",
+            "urgent",
+            "routine"
+          ],
+          "description": "emergency: active flooding, fire, smoke, gas, sparking, lift entrapment. urgent: no AC in summer, no water, a leak that is contained, a front door that will not lock. routine: everything else."
+        },
+        "location_in_unit": {
+          "type": "string",
+          "description": "Where in the unit, e.g. master bathroom, kitchen, balcony."
+        },
+        "description": {
+          "type": "string",
+          "description": "A one or two sentence description of the problem in English, whatever language the caller used."
+        }
+      }
+    }
+  },
+  {
+    "type": "client",
+    "name": "request_human_callback",
+    "description": "Create a case for the Lumora care team to call the owner back, with a summary so they do not have to repeat themselves. Use for complaints, refunds or cancellations, legal or contractual disputes, payment plans, sales enquiries, failed verification, emergency follow-up, or whenever the caller asks for a person.",
+    "expects_response": true,
+    "response_timeout_secs": 10,
+    "parameters": {
+      "type": "object",
+      "required": [
+        "reason",
+        "priority",
+        "summary",
+        "caller_language"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "enum": [
+            "complaint",
+            "refund_or_cancellation",
+            "legal_or_dispute",
+            "payment_plan",
+            "sales_enquiry",
+            "verification_failed",
+            "emergency_followup",
+            "caller_request",
+            "other"
+          ],
+          "description": "Why the callback is needed. complaint: unhappy with a service, a delay or a charge, including requests for compensation. refund_or_cancellation: wants money back for a payment or to cancel a purchase. legal_or_dispute: contractual or legal dispute, or mentions lawyers or courts. payment_plan: wants to pay service charges in instalments. sales_enquiry: wants to buy, rent or resell. verification_failed: could not be verified. emergency_followup: after an emergency. caller_request: asked for a person with no other reason. other: anything else."
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "high",
+            "normal"
+          ],
+          "description": "high for emergencies and distressed callers, otherwise normal."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Two sentences in English: what the caller needs and what has already been done in this call."
+        },
+        "unit_number": {
+          "type": "string",
+          "description": "The unit number if known."
+        },
+        "caller_language": {
+          "type": "string",
+          "enum": [
+            "en",
+            "ar"
+          ],
+          "description": "The language the care team should call back in."
+        },
+        "contact_number": {
+          "type": "string",
+          "description": "Only for callers who could not be verified: the number they want to be called on. Leave empty for verified owners (the number on file is used)."
+        }
+      }
+    }
+  }
+]

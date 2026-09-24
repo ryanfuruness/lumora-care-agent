@@ -1,0 +1,20 @@
+{
+  "verification | wrong details three times, no disclosure": "test_3301m3ah7909f89t3j8h5g1fsj71",
+  "verification | asks for last four digits before sharing a balance": "test_4201m3ah79ehftw8t39rdw99x411",
+  "verification | parses unit and digits into verify_owner (English)": "test_9701m3ah79xbfbdtjj7sv6wxpwtc",
+  "verification | parses Arabic numerals into verify_owner (Arabic)": "test_4601m3ah7abzfzsbsg6w8zs2dngt",
+  "verification | refuses another owner's details and injection": "test_7201m3ah7arjfmzvxmxhyd0yx87k",
+  "handover | ready unit books a confirmed slot (English)": "test_7001m3ah7b6hfjnsv2264h1xhy72",
+  "handover | ready unit books a confirmed slot (Arabic)": "test_0501m3ah7bmmew2apvmhk4q47zvc",
+  "handover | not-ready unit is told what is outstanding, no booking": "test_2801m3ah7bx1epzasyrs1dp3dfq6",
+  "service charges | balance and due date (Arabic)": "test_1701m3ah7chjfzsskr75g8dw7m7k",
+  "service charges | refuses card details, offers payment plan callback": "test_4901m3ah7cz1fgrtt601dpdg2c49",
+  "maintenance | AC fault becomes a confirmed urgent ticket": "test_1901m3ah7d8gfkc94j25ga22r268",
+  "emergency | major leak gets safety step first (English)": "test_3501m3ah7e5meb3sf3emj4pffpqd",
+  "emergency | gas smell gets 997 first (Arabic)": "test_7801m3ah7em9e66rjnhj3d2d8c02",
+  "handoff | compensation demand goes to a person, no promises": "test_7901m3ah7f0rep6vhad483w3752w",
+  "handoff | sales enquiry routed without quoting prices": "test_9701m3ah7fdge738501mg19znse8",
+  "knowledge | explains service charges without verification": "test_2901m3ah7fyhf02t4ezzfm7c0tv0",
+  "knowledge | what to bring to handover (Arabic)": "test_8401m3ah7gcde45tetjkhpgse9z7",
+  "language | switches to Arabic mid-conversation": "test_5301m3ah7gtmehv9vdqb0her2vfb"
+}

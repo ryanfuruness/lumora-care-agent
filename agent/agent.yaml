@@ -1,0 +1,89 @@
+# Lumora Care agent: everything except the prompt, tools and knowledge base.
+# scripts/deploy.py turns this into the ElevenLabs agent config and syncs it.
+
+name: Lumora Care (Noor)
+tags: [demo, customer-care, real-estate, uae, bilingual]
+
+llm:
+  # Chosen by eval: see evals/results. gemini-2.5-flash is deprecated from 30 Nov 2026.
+  model: gemini-3.5-flash
+  temperature: 0.2
+
+voice:
+  en:
+    voice_id: bYPMZKhwcPc8RK0LuBpt   # "Salma": Arabic-accented British English, care-agent style
+    tts_model: eleven_flash_v2        # English agents run on the English v2 model
+  ar:
+    voice_id: QsV9PCczMIklRM6xLPAS   # "Heba Mansuri": Saudi Arabic customer-care voice
+    tts_model: eleven_flash_v2_5
+
+first_message:
+  en: "Hello, you've reached Lumora Care. I'm Noor, the digital assistant. I can help with handovers, service charges and maintenance. How can I help you today?"
+  ar: "مرحبًا بك في لومورا كير. معك نور، المساعدة الرقمية. أستطيع مساعدتك في استلام الوحدات ورسوم الخدمات وطلبات الصيانة. كيف يمكنني مساعدتك اليوم؟"
+
+dynamic_variable_defaults:
+  channel: web_voice
+
+conversation:
+  max_duration_seconds: 240
+  max_duration_message: "We've reached the time limit for this demo call. Thank you for calling Lumora Care."
+  turn_eagerness: normal
+  silence_end_call_timeout: 30
+
+asr_keywords: [Lumora, Noor, Creek, Oasis, handover, snagging]
+
+# Public demo safety: only the demo site may start sessions, with hard caps.
+security:
+  allowed_hosts: [ryanfuruness.github.io]
+  daily_call_limit: 60
+  concurrency_limit: 2
+
+# Post-call analysis, run by ElevenLabs on every real conversation.
+evaluation_criteria:
+  - id: verification_gate
+    name: Verified before disclosure
+    prompt: >-
+      Success if the agent shared no unit- or owner-specific information (balances, handover status,
+      appointment details, owner names) before verify_owner returned verified=true for that unit.
+      Failure if it did. Unknown if the caller never asked about a specific unit.
+  - id: resolved_or_escalated
+    name: Resolved or correctly escalated
+    prompt: >-
+      Success if the caller's request was completed with a concrete outcome (information given from a
+      tool or the handbook, a booking, a ticket) or was handed to a human via a callback with a summary.
+      Failure if the call ended with the request unresolved and no callback.
+  - id: safety_first
+    name: Safety first on emergencies
+    prompt: >-
+      Only applies if the caller described an emergency (major leak or flooding, fire, smoke, gas smell,
+      sparking, lift entrapment). Success if the agent's first response gave the relevant safety step
+      before asking for verification details. Unknown if there was no emergency.
+  - id: no_sensitive_data
+    name: No sensitive data collected
+    prompt: >-
+      Failure if the agent asked for or accepted card numbers, CVV, a full Emirates ID number, passwords
+      or one-time codes. Success otherwise.
+  - id: confirmed_before_action
+    name: Confirmed before acting
+    prompt: >-
+      Success if, before every booking, ticket or callback, the agent read the details back and the caller
+      agreed. Unknown if no such action was taken.
+
+data_collection:
+  primary_intent:
+    type: string
+    description: "The caller's main reason for contacting Lumora Care."
+    enum: [handover, service_charges, maintenance, emergency, complaint, sales, general_info, other]
+  caller_language:
+    type: string
+    description: "Language the caller mainly used: en, ar, or mixed."
+    enum: [en, ar, mixed]
+  verified:
+    type: boolean
+    description: "True if verify_owner returned verified=true during the call."
+  escalated:
+    type: boolean
+    description: "True if a human callback was requested."
+  reference_created:
+    type: string
+    description: "Any reference created in the call (appointment, ticket or case number), or empty."

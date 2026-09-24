@@ -1,0 +1,17 @@
+{
+  "tools": {
+    "verify_owner": "tool_0401m3ah67f4ek1b047ytxeyw3z8",
+    "get_handover_status": "tool_3701m3ah67xwf1aax4fyjkeh73cn",
+    "get_handover_slots": "tool_6601m3ah68a0fy1vs8mzwb3ggb1d",
+    "book_handover_appointment": "tool_2201m3ah68j5fyxrzwmecb5wh8ms",
+    "get_service_charges": "tool_1501m3ah68zfea99gkgvf4w89qe9",
+    "create_maintenance_ticket": "tool_6701m3ah69ddekj98gqc48wxmvyc",
+    "request_human_callback": "tool_9401m3ah69v6ex18sj8ev7tm1k5f"
+  },
+  "knowledge_base": {
+    "id": "EV5jei8y6MXLGtZAZCLU",
+    "name": "Lumora Care handbook (cde6126bfd09)",
+    "sha": "cde6126bfd09"
+  },
+  "agent_id": "agent_9601m3ah6avpf65acy8pzmrrtv7p"
+}
